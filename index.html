@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebRTC Chat</title>
+  <title>WebRTC Video Chat</title>
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 </head>
 <body>
@@ -13,14 +13,13 @@
     <textarea id="text-chat"></textarea>
     <button id="send-chat">Send</button>
   </div>
-  <div id="qr-code"></div>
+
   <script>
     // Get references to the video and text chat elements
     const localVideo = document.getElementById("local-video");
     const remoteVideo = document.getElementById("remote-video");
     const textChat = document.getElementById("text-chat");
     const sendChat = document.getElementById("send-chat");
-    const qrCode = document.getElementById("qr-code");
 
     // Create a RTCPeerConnection object
     const peerConnection = new RTCPeerConnection();
@@ -28,4 +27,10 @@
     // Request access to the user's camera and microphone
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
-        // Add the local stream to the
+        // Add the local stream to the local video element
+        localVideo.srcObject = stream;
+
+        // Add the local stream to the peer connection
+        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+      })
+      .catch(error => console.error("Error accessing user media
