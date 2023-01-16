@@ -13,7 +13,23 @@
     <textarea id="text-chat"></textarea>
     <button id="send-chat">Send</button>
   </div>
+  
+<body>
+  <div>
+    <video id="local-video" autoplay muted></video>
+    <video id="remote-video" autoplay></video>
+  </div>
+  <div>
+    <textarea id="text-chat"></textarea>
+    <button id="send-chat">Send</button>
+  </div>
+  <ul id="connections-list"></ul>
+  <script>
+  //...
+  </script>
+</body>
 
+  
   <script>
     // Get references to the video and text chat elements
     const localVideo = document.getElementById("local-video");
@@ -34,3 +50,39 @@
         stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
       })
       .catch(error => console.error("Error accessing user media
+                                    
+                                    <script>
+    // Get references to the video and text chat elements
+    const localVideo = document.getElementById("local-video");
+    const remoteVideo = document.getElementById("remote-video");
+    const textChat = document.getElementById("text-chat");
+    const sendChat = document.getElementById("send-chat");
+    const connectionsList = document.getElementById("connections-list");
+
+    // Create a RTCPeerConnection object
+    const peerConnection = new RTCPeerConnection();
+
+    // Request access to the user's camera and microphone
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        // Add the local stream to the local video element
+        localVideo.srcObject = stream;
+
+        // Add the local stream to the peer connection
+        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+      })
+      .catch(error => console.error("Error accessing user media:", error));
+
+    // Handle the onicecandidate event to gather the ICE candidates
+    peerConnection.onicecandidate = event => {
+      if (event.candidate) {
+        // Add the new connection to the connections list
+        const newConnection = document.createElement("li");
+        newConnection.innerText = event.candidate.address;
+        connectionsList.appendChild(newConnection);
+      }
+    };
+</script>
+
+  
+  
