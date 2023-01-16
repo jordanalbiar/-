@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>WebRTC Chat</title>
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 </head>
 <body>
   <div>
@@ -12,13 +13,14 @@
     <textarea id="text-chat"></textarea>
     <button id="send-chat">Send</button>
   </div>
-
+  <div id="qr-code"></div>
   <script>
     // Get references to the video and text chat elements
     const localVideo = document.getElementById("local-video");
     const remoteVideo = document.getElementById("remote-video");
     const textChat = document.getElementById("text-chat");
     const sendChat = document.getElementById("send-chat");
+    const qrCode = document.getElementById("qr-code");
 
     // Create a RTCPeerConnection object
     const peerConnection = new RTCPeerConnection();
@@ -26,45 +28,4 @@
     // Request access to the user's camera and microphone
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
-        // Add the local stream to the local video element
-        localVideo.srcObject = stream;
-
-        // Add the local stream to the peer connection
-        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-      })
-      .catch(error => console.error("Error accessing user media:", error));
-
-    // Handle incoming ICE candidates
-    peerConnection.addEventListener("icecandidate", event => {
-      if (event.candidate) {
-        // Send the candidate to the remote peer
-        // (in a real application, you would do this via a signaling server)
-        sendToRemotePeer(event.candidate);
-      }
-    });
-
-    // Handle incoming track events
-    peerConnection.addEventListener("track", event => {
-      // Add the remote stream to the remote video element
-      remoteVideo.srcObject = event.streams[0];
-    });
-
-    // Send a chat message
-    sendChat.addEventListener("click", () => {
-      // Send the message to the remote peer
-      // (in a real application, you would do this via a signaling server)
-      sendToRemotePeer(textChat.value);
-      textChat.value = "";
-    });
-
-    // Handle incoming chat messages
-    // (in a real application, you would do this via a signaling server)
-    receiveFromRemotePeer((data) => {
-      if(data.candidate) {
-        peerConnection.addIceCandidate(data.candidate);
-      } else {
-        textChat.value += `\nRemote: ${data}`;
-      }
-    });
-
-    function sendToRemotePeer(data
+        // Add the local stream to the
